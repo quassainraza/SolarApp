@@ -1,0 +1,68 @@
+{
+  "name": "solarapi",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/solarapp/api/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "platform": "node",
+        "outputPath": "dist/apps/solarapp/api",
+        "format": ["cjs"],
+        "bundle": false,
+        "main": "apps/solarapp/api/src/main.ts",
+        "tsConfig": "apps/solarapp/api/tsconfig.app.json",
+        "assets": ["apps/solarapp/api/src/assets"],
+        "generatePackageJson": true,
+        "esbuildOptions": {
+          "sourcemap": true,
+          "outExtension": {
+            ".js": ".js"
+          }
+        }
+      },
+      "configurations": {
+        "development": {},
+        "production": {
+          "generateLockfile": true,
+          "esbuildOptions": {
+            "sourcemap": false,
+            "outExtension": {
+              ".js": ".js"
+            }
+          }
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "solarapi:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "solarapi:build:development"
+        },
+        "production": {
+          "buildTarget": "solarapi:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/solarapp/api/**/*.ts"]
+      }
+    },
+    "docker-build": {
+      "dependsOn": ["build"],
+      "command": "docker build -f apps/solarapp/api/Dockerfile . -t solarapi"
+    }
+  },
+  "tags": []
+}

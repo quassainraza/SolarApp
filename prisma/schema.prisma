@@ -1,0 +1,54 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model User {
+  id Int @id @default(autoincrement())
+  email String @unique
+  firstname String
+  lastname String?  @default(dbgenerated("NULL"))
+  telephone String?  @default(dbgenerated("NULL"))
+  avatar String?   @default(dbgenerated("NULL"))
+  password String
+  devices Device[]
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+  deletedAt DateTime? @default(dbgenerated("NULL"))
+  lastLogin DateTime?
+}
+
+model Device {
+  id Int @id @default(autoincrement())
+  serialNo String? @unique
+  title String
+  type String
+  locationObject Json
+  comments String?
+  userId Int
+  user User @relation(fields: [userId], references: [id])
+  deviceSpecs Json
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+  deletedAt DateTime? @default(dbgenerated("NULL"))
+  credits Credits[]
+}
+
+model Credits {
+  id Int @id @default(autoincrement())
+  amount Float?
+  deviceId Int 
+  device Device @relation(fields: [deviceId],references: [id])
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+  deletedAt DateTime? @default(dbgenerated("NULL"))
+  cronUuid String?
+}

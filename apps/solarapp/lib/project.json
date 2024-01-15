@@ -1,0 +1,35 @@
+{
+  "name": "lib",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/solarapp/lib/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/solarapp/lib",
+        "main": "apps/solarapp/lib/src/index.ts",
+        "tsConfig": "apps/solarapp/lib/tsconfig.lib.json",
+        "assets": ["apps/solarapp/lib/*.md"],
+        "generatePackageJson": true,
+        "format": ["cjs"]
+      }
+    },
+    "publish": {
+      "command": "node tools/scripts/publish.mjs lib {args.ver} {args.tag}",
+      "dependsOn": ["build"]
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "apps/solarapp/lib/**/*.ts",
+          "apps/solarapp/lib/package.json"
+        ]
+      }
+    }
+  },
+  "tags": []
+}
